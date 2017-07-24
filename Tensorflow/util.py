@@ -3,6 +3,7 @@ import time
 import matplotlib.pyplot as plt
 import pickle
 import numpy as np
+from pandas_ml import ConfusionMatrix
 
 
 def get_log_path():
@@ -95,3 +96,42 @@ def get_data():
         del save
     return train_dataset, train_labels, valid_dataset, valid_labels, test_dataset, test_labels
 
+
+def plot15images(images, cls_true, img_shape, cls_pred=None):
+    """
+    Function to show 15 images with their respective classes.
+    If cls_pred is an array, you can see the image and the prediction.
+
+    :type images: np array
+    :type cls_true: np array
+    :type img_shape: np array
+    :type cls_prediction: None or np array
+    """
+    assert len(images) == len(cls_true) == 15
+    fig, axes = plt.subplots(3, 5, figsize=(11, 11))
+    fig.subplots_adjust(hspace=0.4, wspace=0.4)
+
+    for i, ax in enumerate(axes.flat):
+        ax.imshow(images[i].reshape(img_shape), cmap='binary')
+        if cls_pred is None:
+            xlabel = "True: {0}".format(cls_true[i])
+        else:
+            xlabel = "True: {0}, Pred: {1}".format(cls_true[i], cls_pred[i])
+        ax.set_xlabel(xlabel)
+        ax.set_xticks([])
+        ax.set_yticks([])
+    plt.show()
+
+
+def plotconfusion(truth, predictions):
+    """
+    Function to plot the confusion fuction between the
+    truth and predictions array.
+
+    :type truth: np array
+    :type predictions: np array
+    """
+    cm = ConfusionMatrix(truth, predictions)
+    plt.figure(figsize=(10, 10))
+    cm.plot(backend='seaborn')
+    plt.show()
